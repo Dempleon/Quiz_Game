@@ -2,6 +2,9 @@ var questionTxt = document.querySelector('#question')
 var answers = document.querySelectorAll('#answer');
 var timer = document.querySelector('#timer');
 var hiscore = document.querySelector('#highScores');
+var scoreForm = document.querySelector('#scoreForm');
+var formSubmit = document.querySelector('#submit');
+
 
 // questions will be an array of question objects
 var questions = [
@@ -36,16 +39,21 @@ var timeLeft = 60;
 var currentQuestion = 0;
 var gameOver = false;
 var quizTimer;
-// var gameScore;
+var resultTimeOut;
+
+// player scores will be stored as [name, timeleft]
+var playerScore = ['', 0]
 
 // add event listeners to question answers
 for (var i = 0; i < answers.length; i++) {
     answers[i].addEventListener('click', clickQuestion);
 }
 hiscore.addEventListener('click', showHighScores);
+formSubmit.addEventListener('click', updateHighScores);
 
 
-// event handler for when the question answer is clicked
+
+// event handler for when a question answer is clicked
 function clickQuestion(event) {
     // When the last question is reached
     if (currentQuestion >= questions.length) {
@@ -56,13 +64,13 @@ function clickQuestion(event) {
 
     // Correct answer is chosen, move move to the next question
     if (event.target.innerText === questions[currentQuestion].correctAnswer) {
-        console.log('correct');
+        toggleResult('Correct!');
         currentQuestion++;
         setQuestion();
     } else {
         // wrong answer is chosen, decrease timer by 10 seconds and update timer
         // move on to the next question
-        console.log('wrong');
+        toggleResult('Wrong!');
         currentQuestion++;
         timeLeft -= 10;
         timer.textContent = "Time: " + timeLeft;
@@ -72,7 +80,7 @@ function clickQuestion(event) {
 
 function setQuestion(question) {
     // check to see if there are more questions, else stop the time
-    timer.textContent = "Time: " + timeLeft;
+    // timer.textContent = "Time: " + timeLeft;
     if (currentQuestion >= questions.length) {
         console.log('no more questions');
         clearInterval(quizTimer);
@@ -101,11 +109,14 @@ console.log(timeLeft);
 function showHighScores() {
     // alert('hiscores');
     toggleQuiz();
+    enterScore();
 }
 
+// makes the quiz elements hidden when looking at the hiscores
+// or when entering highscores initials
 function toggleQuiz() {
     if (timer.style.display === 'block') {
-        hiscore.textContent = 'Quiz'
+        hiscore.textContent = 'Start Quiz'
         questionTxt.style.display = 'none';
         timer.style.display = 'none';
         for (var i = 0; i < answers.length; i++) {
@@ -113,11 +124,43 @@ function toggleQuiz() {
         }
         return;
     } else {
+        timeLeft = 60;
+        currentQuestion = 0;
+        timer.textContent = "Time: " + timeLeft;
         hiscore.textContent = 'View Highscores'
         questionTxt.style.display = 'block';
         timer.style.display = 'block';
         for (var i = 0; i < answers.length; i++) {
             answers[i].style.display = 'block';
         }
+        setQuestion();
     }
+}
+
+function toggleResult(str) {
+    var result = document.querySelector('#result');
+    result.textContent = str;
+    result.style.display = 'block'
+    setTimeout(function() {
+        result.style.display = 'none';
+    }, 1500)
+}
+
+function enterScore() {
+    scoreForm.style.display = 'block';
+}
+
+function toggleForm() {
+    if (scoreForm.style.display === 'block') {
+        scoreForm.style.display = 'none';
+    } else {
+        scoreForm.style.display = 'block';
+    }
+}
+
+function updateHighScores() {
+    playerScore[0] = document.querySelector('#name').value;
+    playerScore[1] = timeLeft;
+    document.querySelector('#name').value = '';
+    console.log('playerscore: ' + playerScore);
 }
