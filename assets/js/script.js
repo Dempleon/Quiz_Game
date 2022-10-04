@@ -84,6 +84,9 @@ function clickQuestion(event) {
         toggleResult('Wrong!');
         currentQuestion++;
         timeLeft -= 10;
+        if(timeLeft < 0) {
+            timeLeft = 0;
+        }
         timer.textContent = "Time: " + timeLeft;
         setQuestion();
     }
@@ -111,6 +114,7 @@ function countDown() {
     if (timeLeft > 0) {
         timeLeft--;
     }
+    
 }
 
 
@@ -189,7 +193,13 @@ function toggleScoresTable() {
 // function to update the hiscores table and the localstorage scores
 function updateHighScores() {
     playerScore[0] = document.querySelector('#name').value;
+    // input field must contain something else nothing will happen
     if(!playerScore[0]) {
+        return;
+    }
+    // user must answer all questions in order to save their scores
+    if (currentQuestion < questions.length) {
+        console.log('answer all questions')
         return;
     }
     document.querySelector('#name').value = '';
