@@ -1,3 +1,26 @@
 #answer:hover {
     background-color: aqua;
 }
+#highScores:hover {
+    background-color: aqua;
+}
+
+#answer, #highScores, #timer, #question{
+    font-family: Arial, Helvetica, sans-serif;
+    display: block;
+    list-style: none;
+    width: fit-content;
+    padding: 3vh;
+    margin: 2vh;
+    border-radius: 5px;
+    border: 3px solid rgb(52, 165, 240);
+    background-color: white;
+}
+body {
+    background-color: rgb(56, 54, 54);
+}
+/* #question {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    display: block;
+} */

@@ -1,6 +1,7 @@
 var questionTxt = document.querySelector('#question')
-var answers = document.querySelectorAll('li');
+var answers = document.querySelectorAll('#answer');
 var timer = document.querySelector('#timer');
+var hiscore = document.querySelector('#highScores');
 
 // questions will be an array of question objects
 var questions = [
@@ -35,36 +36,47 @@ var timeLeft = 60;
 var currentQuestion = 0;
 var gameOver = false;
 var quizTimer;
+// var gameScore;
 
 // add event listeners to question answers
 for (var i = 0; i < answers.length; i++) {
     answers[i].addEventListener('click', clickQuestion);
 }
+hiscore.addEventListener('click', showHighScores);
+
 
 // event handler for when the question answer is clicked
 function clickQuestion(event) {
-    if(currentQuestion >= questions.length){
+    // When the last question is reached
+    if (currentQuestion >= questions.length) {
         console.log('no more questions');
         return;
     }
     console.log(event.target.innerText);
-    if(event.target.innerText === questions[currentQuestion].correctAnswer) {
+
+    // Correct answer is chosen, move move to the next question
+    if (event.target.innerText === questions[currentQuestion].correctAnswer) {
         console.log('correct');
         currentQuestion++;
         setQuestion();
     } else {
+        // wrong answer is chosen, decrease timer by 10 seconds and update timer
+        // move on to the next question
         console.log('wrong');
         currentQuestion++;
         timeLeft -= 10;
+        timer.textContent = "Time: " + timeLeft;
         setQuestion();
     }
 }
 
 function setQuestion(question) {
-
-    if(currentQuestion >= questions.length){
+    // check to see if there are more questions, else stop the time
+    timer.textContent = "Time: " + timeLeft;
+    if (currentQuestion >= questions.length) {
         console.log('no more questions');
         clearInterval(quizTimer);
+        toggleQuiz();
         return;
     }
     questionTxt.textContent = questions[currentQuestion]["question"];
@@ -74,8 +86,8 @@ function setQuestion(question) {
 }
 
 function countDown() {
-    timer.textContent = "Timer: " + timeLeft;
-    if(timeLeft > 0) {
+    timer.textContent = "Time: " + timeLeft;
+    if (timeLeft > 0) {
         timeLeft--;
     } else {
 
@@ -84,3 +96,28 @@ function countDown() {
 
 quizTimer = setInterval(countDown, 1000)
 setQuestion();
+console.log(timeLeft);
+
+function showHighScores() {
+    // alert('hiscores');
+    toggleQuiz();
+}
+
+function toggleQuiz() {
+    if (timer.style.display === 'block') {
+        hiscore.textContent = 'Quiz'
+        questionTxt.style.display = 'none';
+        timer.style.display = 'none';
+        for (var i = 0; i < answers.length; i++) {
+            answers[i].style.display = 'none';
+        }
+        return;
+    } else {
+        hiscore.textContent = 'View Highscores'
+        questionTxt.style.display = 'block';
+        timer.style.display = 'block';
+        for (var i = 0; i < answers.length; i++) {
+            answers[i].style.display = 'block';
+        }
+    }
+}
